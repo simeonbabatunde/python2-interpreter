@@ -49,7 +49,7 @@ slicing a little challenging, especially the ones with negative start and stop i
 Troubleshooting memory leaks takes a huge chunk of my time, even though I ensured that all pointers
 were added to the pool of nodes. Floating point results in Python differs a little from c++ results,
 I had to set the precision to 5 decimal_places in order to pass the test cases. Finally, tracing the
-AST in the parser seems a little challenging as well
+AST in the parser seems a little challenging as well.
 
 
-I'm taking a mulligan for negative index in string slicing e.g. x[-3:6]
+I'm taking a mulligan for negative index in string slicing e.g. x[-3:6].
