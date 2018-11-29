@@ -97,19 +97,3 @@ public:
   IndexBinaryNode(Node* left, Node* right) : BinaryNode(left, right) {}
   virtual const Literal* eval() const;
 };
-
-class SliceNode : public Node {
-public:
-  SliceNode(Node* l, const int _start, const int _stop, const bool _isFirstSlice, \
-    const bool _isSecondSlice, const bool _isEmptySlice) : Node(), left(l), \
-    start(_start), stop(_stop), isFirstSlice(_isFirstSlice), isSecondSlice(_isSecondSlice)\
-    , isEmptySlice(_isEmptySlice){ }
-  virtual const Literal* eval() const;
-protected:
-  Node *left;
-  int start;
-  int stop;
-  bool isFirstSlice;
-  bool isSecondSlice;
-  bool isEmptySlice;
-};

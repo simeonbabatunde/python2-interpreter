@@ -60,9 +60,9 @@ int main(int argc, char * argv[]) {
   }
 
   PoolOfNodes::getInstance().drainThePool();
-
   fclose(input_file);
   free_scanner();
   yylex_destroy();
+
   return (parse_had_errors ? EXIT_FAILURE : EXIT_SUCCESS);
 }

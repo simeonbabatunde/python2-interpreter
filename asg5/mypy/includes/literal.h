@@ -50,8 +50,6 @@ public:
   virtual const Literal* opIndex(int) const =0;
   virtual const Literal* opIndex(const std::string &) const =0;
 
-  virtual const Literal* SliceOperator(const int start, const int stop, \
-  const bool isFirstSlice, const bool isSecondSlice, const bool isEmptySlice) const =0;
 
   virtual const Literal* eval() const = 0;
   virtual void print() const {
@@ -174,24 +172,6 @@ public:
   }
   virtual const Literal* opIndex(const std::string &) const  {
     throw std::string("can't get string index with string");
-  }
-
-  virtual const Literal* SliceOperator(const int start, const int stop, \
-  const bool isFirstSlice, const bool isSecondSlice, const bool isEmptySlice) const {
-    std::string s;
-
-    if(isFirstSlice){
-      s = val.substr(start, val.size());
-    }else if(isSecondSlice){
-      s = val.substr(0, stop);
-    }else if(isEmptySlice){
-      s = val;
-    }else{
-      s = val.substr(start, stop - start);
-    }
-    const Literal* node = new StringLiteral(s);
-    PoolOfNodes::getInstance().add(node);
-    return node;
   }
 
 
@@ -544,10 +524,6 @@ public:
     }
   }
 
-  virtual const Literal* SliceOperator(const int start, const int stop, \
-  const bool isFirstSlice, const bool isSecondSlice, const bool isEmptySlice) const {
-    throw std::string("can't get int index with float");
-  }
 
 
   int getInt() const{

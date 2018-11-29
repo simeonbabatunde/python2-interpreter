@@ -14,8 +14,7 @@
 	int start;
 	int stop;
 	int step;
-	bool isSlice = false, isIndex = false, isFirstSlice = false, isSecondSlice = false;
-	bool isEmptySlice = false;
+	bool isIndex = false;
 %}
 
 %union {
@@ -590,20 +589,13 @@ power // Used in: factor
 			pool.add($$);
 		}
 	| atom star_trailer {
-			if(($2 == nullptr) & (isFirstSlice == false) & (isSecondSlice == false) & (isEmptySlice == false)){
+			if($2 == nullptr){
 				$$ = $1;
 			}else{
 				if(isIndex){
 					$$ = new IndexBinaryNode($1, $2);
 					pool.add($$);
 					isIndex = false;
-				}
-				if(isSlice){
-					$$ = new SliceNode($1, start, stop, isFirstSlice, isSecondSlice, isEmptySlice);
-					pool.add($$);
-					isFirstSlice = false;
-					isSecondSlice = false;
-					isEmptySlice = false;
 				}
 			}
 		}
@@ -697,28 +689,7 @@ subscript // Used in: subscriptlist, star_COMMA_subscript
 			$$ = $1;
 			isIndex = true;
 		}
-	| opt_test_only COLON opt_test_only opt_sliceop {
-			if(($1 != nullptr) & ($3 == nullptr)){
-				isFirstSlice = true;
-				start = static_cast<const IntLiteral *> ($1) -> getInt();
-				stop = 0;
-			}
-			if(($1 == nullptr) & ($3 != nullptr)){
-				isSecondSlice = true;
-				start = 0;
-				stop = static_cast<const IntLiteral *> ($3) -> getInt();
-			}
-			if(($1 == nullptr) & ($3 == nullptr)){
-				isEmptySlice = true;
-				start = 0;
-				stop = 0;
-			}
-			if(($1 != nullptr) & ($3 != nullptr)){
-				start = static_cast<const IntLiteral *> ($1) -> getInt();
-				stop = static_cast<const IntLiteral *> ($3) -> getInt();
-			}
-			isSlice = true;
-		}
+	| opt_test_only COLON opt_test_only opt_sliceop { $$ = $1;}
 	;
 opt_test_only // Used in: subscript
 	: test {$$ = $1;}
@@ -761,8 +732,8 @@ pick_for_test // Used in: dictorsetmaker
 	| star_COMMA_test opt_COMMA
 	;
 classdef // Used in: decorated, compound_stmt
-	: CLASS NAME LPAR opt_testlist RPAR COLON suite
-	| CLASS NAME COLON suite
+	: CLASS NAME LPAR opt_testlist RPAR COLON suite {delete [] $2;}
+	| CLASS NAME COLON suite {delete [] $2;}
 	;
 opt_testlist // Used in: classdef
 	: testlist

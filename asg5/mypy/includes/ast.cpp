@@ -107,12 +107,3 @@ const Literal* IndexBinaryNode::eval() const {
   const Literal* y = right->eval();
   return ((*x).IndexOperator(*y));
 }
-
-const Literal* SliceNode::eval() const {
-  if (!left) {
-    throw std::string("error");
-  }
-  const Literal* x = left->eval();
-
-  return ((*x).SliceOperator(start, stop, isFirstSlice, isSecondSlice, isEmptySlice));
-}
