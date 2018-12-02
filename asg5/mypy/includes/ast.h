@@ -31,6 +31,43 @@ private:
   std::string str;
 };
 
+class CallNode: public Node{
+public:
+  CallNode(const std::string id):Node(), ident(id){}
+  virtual ~CallNode(){}
+  virtual const Literal* eval() const;
+private:
+  std::string ident;
+};
+
+class FuncNode: public Node{
+public:
+  FuncNode(const std::string id, Node* stmts): ident(id), suite(stmts){}
+  virtual ~FuncNode(){}
+  virtual const Literal* eval() const;
+private:
+  std::string ident;
+  Node * suite;
+};
+
+class PrintNode: public Node{
+public:
+  PrintNode(Node * p): Node(), Pnode(p){}
+  virtual const Literal* eval() const;
+protected:
+  Node * Pnode;
+};
+
+class SuiteNode: public Node{
+public:
+  SuiteNode(const std::vector<Node*> s): Node(), stmts(s){}
+  virtual ~SuiteNode(){}
+  virtual const Literal* eval() const;
+protected:
+  std::vector<Node *> stmts;
+};
+
+
 class BinaryNode : public Node {
 public:
   BinaryNode(Node* l, Node* r) : Node(), left(l), right(r) {}

@@ -4,6 +4,7 @@
 	#include <map>
 	#include <cmath>
 	#include "includes/ast.h"
+	#include <vector>
 
 	int yylex (void);
 	extern char *yytext;
@@ -19,11 +20,13 @@
 
 %union {
   Node* node;
+	std::vector<Node*>* vec;
   int intNumber;
   float fltNumber;
   char *id;
 	int tokenType;
 	char * stringInput;
+	int flag;
 }
 
 // 83 tokens, in alphabetical order:
@@ -51,7 +54,9 @@
 %type<node> pick_yield_expr_testlist_comp opt_yield_test testlist_comp opt_listmaker comparison
 %type<node> yield_expr old_lambdef lambdef opt_dictorsetmaker testlist1 star_EQUAL expr listmaker
 %type<node> dictorsetmaker plus_STRING subscript opt_test_only star_COMMA_subscript subscriptlist
-%type<node> trailer star_trailer
+%type<node> trailer star_trailer funcdef suite simple_stmt small_stmt print_stmt flow_stmt return_stmt
+%type<node> stmt compound_stmt if_stmt while_stmt for_stmt try_stmt with_stmt
+%type<vec> plus_stmt
 
 %start start
 
@@ -90,7 +95,12 @@ decorated // Used in: compound_stmt
 	| decorators funcdef
 	;
 funcdef // Used in: decorated, compound_stmt
-	: DEF NAME parameters COLON suite {delete [] $2;}
+	: DEF NAME parameters COLON suite {
+			$$ = nullptr;
+			//$$ = new FuncNode($2, $5);
+			//pool.add($$);
+			//delete [] $2;
+		}
 	;
 parameters // Used in: funcdef
 	: LPAR varargslist RPAR
@@ -137,23 +147,23 @@ stmt // Used in: pick_NEWLINE_stmt, plus_stmt
 	| compound_stmt
 	;
 simple_stmt // Used in: stmt, suite
-	: small_stmt star_SEMI_small_stmt SEMI NEWLINE
-	| small_stmt star_SEMI_small_stmt NEWLINE
+	: small_stmt star_SEMI_small_stmt SEMI NEWLINE {$$ = $1;}
+	| small_stmt star_SEMI_small_stmt NEWLINE {$$ = $1;}
 	;
 star_SEMI_small_stmt // Used in: simple_stmt, star_SEMI_small_stmt
 	: star_SEMI_small_stmt SEMI small_stmt
 	| %empty
 	;
 small_stmt // Used in: simple_stmt, star_SEMI_small_stmt
-	: expr_stmt
-	| print_stmt
-	| del_stmt
-	| pass_stmt
-	| flow_stmt
-	| import_stmt
-	| global_stmt
-	| exec_stmt
-	| assert_stmt
+	: expr_stmt {$$ = $1;}
+	| print_stmt {$$ = $1;}
+	| del_stmt {$$ = nullptr;}
+	| pass_stmt {$$ = nullptr;}
+	| flow_stmt {$$ = $1;}
+	| import_stmt {$$ = nullptr;}
+	| global_stmt {$$ = nullptr;}
+	| exec_stmt {$$ = nullptr;}
+	| assert_stmt {$$ = nullptr;}
 	;
 expr_stmt // Used in: small_stmt
 	: testlist augassign pick_yield_expr_testlist{
@@ -252,7 +262,7 @@ print_stmt // Used in: small_stmt
 				std::cout<< "Hey! something is wrong." << std::endl;
 			}
 		}
-	| PRINT RIGHTSHIFT test opt_test_2
+	| PRINT RIGHTSHIFT test opt_test_2 {$$ = nullptr;}
 	;
 star_COMMA_test // Used in: star_COMMA_test, opt_test, listmaker, testlist_comp, testlist, pick_for_test
 	: star_COMMA_test COMMA test
@@ -277,11 +287,11 @@ pass_stmt // Used in: small_stmt
 	: PASS
 	;
 flow_stmt // Used in: small_stmt
-	: break_stmt
-	| continue_stmt
-	| return_stmt
-	| raise_stmt
-	| yield_stmt
+	: break_stmt {return 0;}
+	| continue_stmt {return 0;}
+	| return_stmt {$$ = $1;}
+	| raise_stmt {return 0;}
+	| yield_stmt {return 0;}
 	;
 break_stmt // Used in: flow_stmt
 	: BREAK
@@ -290,8 +300,8 @@ continue_stmt // Used in: flow_stmt
 	: CONTINUE
 	;
 return_stmt // Used in: flow_stmt
-	: RETURN testlist
-	| RETURN
+	: RETURN testlist {return 0;}
+	| RETURN {return 0;}
 	;
 yield_stmt // Used in: flow_stmt
 	: yield_expr
@@ -367,34 +377,34 @@ assert_stmt // Used in: small_stmt
 	| ASSERT test
 	;
 compound_stmt // Used in: stmt
-	: if_stmt
-	| while_stmt
-	| for_stmt
-	| try_stmt
-	| with_stmt
-	| funcdef
-	| classdef
-	| decorated
+	: if_stmt {$$ = $1;}
+	| while_stmt {return 0;}
+	| for_stmt {return 0;}
+	| try_stmt {return 0;}
+	| with_stmt {return 0;}
+	| funcdef {$$ = $1;}
+	| classdef {return 0;}
+	| decorated {return 0;}
 	;
 if_stmt // Used in: compound_stmt
-	: IF test COLON suite star_ELIF ELSE COLON suite
-	| IF test COLON suite star_ELIF
+	: IF test COLON suite star_ELIF ELSE COLON suite {return 0;}
+	| IF test COLON suite star_ELIF {return 0;}
 	;
 star_ELIF // Used in: if_stmt, star_ELIF
 	: star_ELIF ELIF test COLON suite
 	| %empty
 	;
 while_stmt // Used in: compound_stmt
-	: WHILE test COLON suite ELSE COLON suite
-	| WHILE test COLON suite
+	: WHILE test COLON suite ELSE COLON suite {return 0;}
+	| WHILE test COLON suite {return 0;}
 	;
 for_stmt // Used in: compound_stmt
-	: FOR exprlist IN testlist COLON suite ELSE COLON suite
-	| FOR exprlist IN testlist COLON suite
+	: FOR exprlist IN testlist COLON suite ELSE COLON suite {return 0;}
+	| FOR exprlist IN testlist COLON suite {return 0;}
 	;
 try_stmt // Used in: compound_stmt
-	: TRY COLON suite plus_except opt_ELSE opt_FINALLY
-	| TRY COLON suite FINALLY COLON suite
+	: TRY COLON suite plus_except opt_ELSE opt_FINALLY {return 0;}
+	| TRY COLON suite FINALLY COLON suite {return 0;}
 	;
 plus_except // Used in: try_stmt, plus_except
 	: plus_except except_clause COLON suite
@@ -409,7 +419,7 @@ opt_FINALLY // Used in: try_stmt
 	| %empty
 	;
 with_stmt // Used in: compound_stmt
-	: WITH with_item star_COMMA_with_item COLON suite
+	: WITH with_item star_COMMA_with_item COLON suite {return 0;}
 	;
 star_COMMA_with_item // Used in: with_stmt, star_COMMA_with_item
 	: star_COMMA_with_item COMMA with_item
@@ -432,12 +442,22 @@ opt_AS_COMMA // Used in: except_clause
 	| %empty
 	;
 suite // Used in: funcdef, if_stmt, star_ELIF, while_stmt, for_stmt, try_stmt, plus_except, opt_ELSE, opt_FINALLY, with_stmt, classdef
-	: simple_stmt
-	| NEWLINE INDENT plus_stmt DEDENT
+	: simple_stmt {$$ = $1;}
+	| NEWLINE INDENT plus_stmt DEDENT {
+			$$ = new SuiteNode(*$3);
+			pool.add($$);
+			delete $3;
+		}
 	;
 plus_stmt // Used in: suite, plus_stmt
-	: plus_stmt stmt
-	| stmt
+	: plus_stmt stmt {
+			$$ = $1;
+			$$->push_back($2);
+		}
+	| stmt {
+			$$ = new std::vector<Node*>();
+			$$->push_back($1);
+		}
 	;
 testlist_safe // Used in: list_for
 	: old_test plus_COMMA_old_test opt_COMMA
@@ -596,6 +616,11 @@ power // Used in: factor
 					$$ = new IndexBinaryNode($1, $2);
 					pool.add($$);
 					isIndex = false;
+				}else{
+					$$ = nullptr;
+					//std::string n = static_cast<IdentNode*>($1)->getIdent();
+					//$$ = new CallNode(n);
+					//pool.add($$);
 				}
 			}
 		}
@@ -671,7 +696,7 @@ lambdef // Used in: test
 	| LAMBDA COLON test {$$ = $3;}
 	;
 trailer // Used in: star_trailer
-	: LPAR opt_arglist RPAR {$$ = nullptr;}
+	: LPAR opt_arglist RPAR {$$ = new IntLiteral(1); pool.add($$);}
 	| LSQB subscriptlist RSQB {$$ = $2;}
 	| DOT NAME {$$ = nullptr; delete [] $2;}
 	;

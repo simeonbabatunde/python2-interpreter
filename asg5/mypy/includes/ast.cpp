@@ -5,10 +5,13 @@
 #include <cstdlib>
 #include <iomanip>
 #include "ast.h"
-#include "symbolTable.h"
+#include "tableManager.h"
+
+bool returnFlag = false;
+const Literal* reVal = nullptr;
 
 const Literal* IdentNode::eval() const {
-  const Literal* val = SymbolTable::getInstance().getValue(ident);
+  const Literal* val = TableManager::getInstance().getSymbol(ident);
   return val;
 }
 
@@ -17,11 +20,53 @@ const Literal* StringNode::eval() const {
   return val;
 }
 
+const Literal* CallNode::eval() const{
+  TableManager& tableManage = TableManager::getInstance();
+  const Node* suite = tableManage.getSuite(ident);
+  if(!suite){
+    std::cout<< "function " << ident << " Not Found" << std::endl;
+    throw std::exception();
+  }
+  tableManage.pushScope();
+  suite->eval();
+  tableManage.popScope();
+
+  if(returnFlag){
+    returnFlag = false;
+  }
+
+  return reVal;
+}
+
+const Literal* PrintNode::eval() const{
+  const Literal* eval = Pnode->eval();
+  if(eval && !returnFlag){
+    eval->print();
+  }
+  return nullptr;
+}
+
+const Literal* FuncNode::eval() const{
+  if(!returnFlag){
+    TableManager::getInstance().insertFunction(ident, suite);
+  }
+  return nullptr;
+}
+
+const Literal* SuiteNode::eval() const{
+  if(!returnFlag){
+    for(const Node* n: stmts){
+      if(n) n->eval();
+    }
+  }
+  return nullptr;
+}
+
 AsgBinaryNode::AsgBinaryNode(Node* left, Node* right) :
   BinaryNode(left, right) {
   const Literal* res = right->eval();
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  SymbolTable::getInstance().setValue(n, res);
+  TableManager::getInstance().insertSymbol(n, res);
 }
 
 
@@ -30,11 +75,17 @@ const Literal* AsgBinaryNode::eval() const {
     throw std::string("error");
   }
   const Literal* res = right->eval();
-
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  SymbolTable::getInstance().setValue(n, res);
+
+  // Check if it already exist
+  if(!(TableManager::getInstance().checkName(n))){
+    TableManager::getInstance().insertSymbol(n, nullptr);
+  }
+  TableManager::getInstance().insertSymbol(n, res);
   return res;
 }
+
+
 
 const Literal* AddBinaryNode::eval() const {
   if (!left || !right) {
