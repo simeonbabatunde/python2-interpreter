@@ -24,7 +24,7 @@ const Literal* CallNode::eval() const{
   TableManager& tableManage = TableManager::getInstance();
 
   if(!tableManage.checkFunction(ident)){
-    std::cout<< "function " << ident << " not defined " << std::endl;
+    std::cout<< "function '" << ident << "' is not defined " << std::endl;
     throw std::exception();
   }
 

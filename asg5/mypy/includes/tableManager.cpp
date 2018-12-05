@@ -36,9 +36,7 @@ const Node* TableManager::getSuite(const std::string& name){
     }
     --scope;
   }
-  // Suite cannot be found
-  std::cout<< "function " << name << " not defined " << std::endl;
-  throw std::exception();
+  return nullptr;
 }
 
 void TableManager::insertSymbol(const std::string& name, const Literal* symbol){
