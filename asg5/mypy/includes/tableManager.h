@@ -20,8 +20,8 @@ public:
   void insertSymbol(const std::string& name, const Literal* symbol);
   void insertFunction(const std::string& name, const Node* suite);
 
-  bool checkName(const std::string& name);
-  bool checkFunction(const std::string& name);
+  bool checkName(const std::string& name) const;
+  bool checkFunction(const std::string& name) const;
 
   void pushScope();
   void popScope();
@@ -31,7 +31,7 @@ private:
   std::vector<SymbolTable> tables;
   std::vector<FunctionTable> functions;
 
-  TableManager():tables(), functions(){
+  TableManager(): currentScope(0), tables(), functions(){
     tables.push_back(SymbolTable());
     functions.push_back(FunctionTable());
   };

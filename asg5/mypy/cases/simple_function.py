@@ -1,7 +1,12 @@
 def f():
   x = 5
   print x
-  return
-  print 4 + x
-
+  def g():
+      y = 50
+      print y
+      def k():
+          z= z+500
+          print z
+      k()
+  g()
 f()

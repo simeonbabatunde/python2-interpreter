@@ -4,9 +4,9 @@ Course no: CpSc 8270
 
 Clemson Email Address: sbabatu@g.clemson.edu
 
-Project no: 4
+Project no: 5
 
-Project due date: November 16, 2018
+Project due date: December 7, 2018
 
 Project description:
 This project focuses on building an Abstract Syntax Tree (AST) representation of the
@@ -20,17 +20,11 @@ I ensured accurate precision format using <iomanip> for the floatLiterals by imp
 the number of digits after the dot in a float number, with this, I was able to eliminate the FLOAT:
 and INT: strings in the print statements.
 
-I also implemented the TILDE unary operator (~) in addition to unary minus and plus. The ~
-operator is implemented using Two's complement.
+I ensured that an exception is thrown whenever a local variable is referenced before assignment, similar to
+how Python 2.7.x operates. The implementation can be found in tableManager.cpp.
 
-In addition to implementing the various forms of assignment, I also implemented the x*=y form.
+String concatenation, multiplication, and indexing works perfectly.
 
-The negative index for string was also implemented. For example print x[-1].
-
-I implemented string concatenation, multiplication, indexing and slicing including formats
-like x[:], x[1:], x[:5], etc.
-
-I adopted Connor's test harness to verify the output of my program against Python 2.7
 
 I updated both the scanner, parser other files in the include directory with necessary logic to
 represent and interpret Python code.
@@ -50,6 +44,3 @@ Troubleshooting memory leaks takes a huge chunk of my time, even though I ensure
 were added to the pool of nodes. Floating point results in Python differs a little from c++ results,
 I had to set the precision to 5 decimal_places in order to pass the test cases. Finally, tracing the
 AST in the parser seems a little challenging as well
-
-
-I'm taking a mulligan for negative index in string slicing e.g. x[-3:6]

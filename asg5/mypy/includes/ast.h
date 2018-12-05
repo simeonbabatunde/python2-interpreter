@@ -35,6 +35,7 @@ class CallNode: public Node{
 public:
   CallNode(const std::string id):Node(), ident(id){}
   virtual ~CallNode(){}
+  const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
@@ -44,6 +45,7 @@ class FuncNode: public Node{
 public:
   FuncNode(const std::string id, Node* stmts): ident(id), suite(stmts){}
   virtual ~FuncNode(){}
+  const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
@@ -83,7 +85,7 @@ protected:
 
 class AsgBinaryNode : public BinaryNode {
 public:
-  AsgBinaryNode(Node* left, Node* right);
+  AsgBinaryNode(Node* left, Node* right): BinaryNode(left, right) { }
   virtual const Literal* eval() const;
 };
 

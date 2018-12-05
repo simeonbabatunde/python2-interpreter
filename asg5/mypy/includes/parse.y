@@ -72,7 +72,11 @@ file_input // Used in: start
 	;
 pick_NEWLINE_stmt // Used in: star_NEWLINE_stmt
 	: NEWLINE
-	| stmt
+	| stmt {
+			if($1){
+				$1->eval();
+			}
+		}
 	;
 star_NEWLINE_stmt // Used in: file_input, star_NEWLINE_stmt
 	: star_NEWLINE_stmt pick_NEWLINE_stmt
@@ -96,10 +100,9 @@ decorated // Used in: compound_stmt
 	;
 funcdef // Used in: decorated, compound_stmt
 	: DEF NAME parameters COLON suite {
-			$$ = nullptr;
-			//$$ = new FuncNode($2, $5);
-			//pool.add($$);
-			//delete [] $2;
+			$$ = new FuncNode($2, $5);
+			pool.add($$);
+			delete [] $2;
 		}
 	;
 parameters // Used in: funcdef
@@ -254,13 +257,21 @@ augassign // Used in: expr_stmt
 	;
 print_stmt // Used in: small_stmt
 	: PRINT opt_test {
-			try{
-				$2->eval()->print();
-			}catch(std::string & msg){
-				std::cout<< msg << std::endl;
-			}catch( ... ){
-				std::cout<< "Hey! something is wrong." << std::endl;
+			if ($2){
+				$$ = new PrintNode($2);
+				pool.add($$);
+			}else{
+				$$ = new PrintNode(nullptr);
+				pool.add($$);
 			}
+
+			//try{
+			//	$2->eval()->print();
+			//}catch(std::string & msg){
+			//	std::cout<< msg << std::endl;
+			//}catch( ... ){
+			//	std::cout<< "Hey! something is wrong." << std::endl;
+			//}
 		}
 	| PRINT RIGHTSHIFT test opt_test_2 {$$ = nullptr;}
 	;
@@ -456,6 +467,7 @@ plus_stmt // Used in: suite, plus_stmt
 		}
 	| stmt {
 			$$ = new std::vector<Node*>();
+			$$->reserve(8);
 			$$->push_back($1);
 		}
 	;
@@ -609,19 +621,18 @@ power // Used in: factor
 			pool.add($$);
 		}
 	| atom star_trailer {
-			if($2 == nullptr){
-				$$ = $1;
-			}else{
+			if($2){
 				if(isIndex){
 					$$ = new IndexBinaryNode($1, $2);
 					pool.add($$);
 					isIndex = false;
 				}else{
-					$$ = nullptr;
-					//std::string n = static_cast<IdentNode*>($1)->getIdent();
-					//$$ = new CallNode(n);
-					//pool.add($$);
+					std::string n = static_cast<IdentNode*>($1)->getIdent();
+					$$ = new CallNode(n);
+					pool.add($$);
 				}
+			}else{
+				$$ = $1;
 			}
 		}
 	;

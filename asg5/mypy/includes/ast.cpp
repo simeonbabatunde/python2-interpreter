@@ -22,18 +22,17 @@ const Literal* StringNode::eval() const {
 
 const Literal* CallNode::eval() const{
   TableManager& tableManage = TableManager::getInstance();
-  const Node* suite = tableManage.getSuite(ident);
-  if(!suite){
-    std::cout<< "function " << ident << " Not Found" << std::endl;
+
+  if(!tableManage.checkFunction(ident)){
+    std::cout<< "function " << ident << " not defined " << std::endl;
     throw std::exception();
   }
+
   tableManage.pushScope();
-  suite->eval();
+  tableManage.getSuite(ident)->eval();
+  // const Literal* res = TableManager::getInstance().getSymbol()
   tableManage.popScope();
 
-  if(returnFlag){
-    returnFlag = false;
-  }
 
   return reVal;
 }
@@ -43,41 +42,35 @@ const Literal* PrintNode::eval() const{
   if(eval && !returnFlag){
     eval->print();
   }
+
   return nullptr;
 }
 
 const Literal* FuncNode::eval() const{
-  if(!returnFlag){
-    TableManager::getInstance().insertFunction(ident, suite);
-  }
+  TableManager::getInstance().insertFunction(ident, suite);
+
   return nullptr;
 }
 
 const Literal* SuiteNode::eval() const{
-  if(!returnFlag){
     for(const Node* n: stmts){
-      if(n) n->eval();
+      if(!n){
+        throw std::string("nullptr suite node came up");
+      }
+      n->eval();
     }
-  }
   return nullptr;
 }
-
-AsgBinaryNode::AsgBinaryNode(Node* left, Node* right) :
-  BinaryNode(left, right) {
-  const Literal* res = right->eval();
-  const std::string n = static_cast<IdentNode*>(left)->getIdent();
-  TableManager::getInstance().insertSymbol(n, res);
-}
-
 
 const Literal* AsgBinaryNode::eval() const {
   if (!left || !right) {
     throw std::string("error");
   }
+
   const Literal* res = right->eval();
   const std::string n = static_cast<IdentNode*>(left)->getIdent();
 
-  // Check if it already exist
+  // Check if it doesn't exist already
   if(!(TableManager::getInstance().checkName(n))){
     TableManager::getInstance().insertSymbol(n, nullptr);
   }

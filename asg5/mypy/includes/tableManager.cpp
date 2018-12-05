@@ -10,89 +10,72 @@ TableManager& TableManager::getInstance(){
 }
 
 const Literal* TableManager::getSymbol(const std::string& name){
-  currentScope = tables.size() -1;
+  int scope = currentScope;
 
-  // Check the current scope for the symbol
-  if(tables[currentScope].found(name)){
-    const Literal * symbol = tables[currentScope].getValue(name);
-
-    // Check if local variable has been assigned
-    if(!symbol){
-      std::cout<< "local variable '" << name <<"'referenced before assignment "<<std::endl;
-      throw std::exception();
+  // Check the current and previous scope for the symbol
+  while(scope >= 0){
+    if(tables[scope].found(name)){
+      const Literal * symbol = tables[scope].getValue(name);
+      return symbol;
     }
-
-    return symbol;
-  }else{
-    if(tables.size() > 1){
-      currentScope = tables.size() - 2; //Move down the stack by one step
-      while(currentScope != -1){
-        if(tables[currentScope].found(name)){
-          const Literal * symbol = tables[currentScope].getValue(name);
-
-          return symbol;
-        }
-        --currentScope;
-      }
-    }
+    --scope;
   }
-  return nullptr;   // Symbol cannot be located.
+  // Symbol cannot be found
+  std::cout<< "local variable '" << name <<"'referenced before assignment "<<std::endl;
+  throw std::exception();
 }
 
 const Node* TableManager::getSuite(const std::string& name){
-  currentScope = functions.size() - 1;
+  int scope = currentScope;
 
   // Check the current scope
-  if(functions[currentScope].found(name)){
-    const Node * suite = functions[currentScope].getValue(name);
-
-    return suite;
-  }else{
-    if(functions.size() > 1){
-      currentScope = functions.size() -2;
-      while(currentScope != -1){
-        if(functions[currentScope].found(name)){
-          const Node * suite = functions[currentScope].getValue(name);
-          return suite;
-        }
-        --currentScope;
-      }
+  while(scope >= 0){
+    if(functions[scope].found(name)){
+      const Node * suite = functions[scope].getValue(name);
+      return suite;
     }
+    --scope;
   }
-  return nullptr;
+  // Suite cannot be found
+  std::cout<< "function " << name << " not defined " << std::endl;
+  throw std::exception();
 }
 
 void TableManager::insertSymbol(const std::string& name, const Literal* symbol){
-  currentScope = tables.size()-1;
   tables[currentScope].setValue(name, symbol);
 }
 
 void TableManager::insertFunction(const std::string& name, const Node* suite){
-  currentScope = functions.size()-1;
   functions[currentScope].setValue(name, suite);
 }
 
 
-bool TableManager::checkName(const std::string& name){
-  currentScope = tables.size()-1;
-  bool res = tables[currentScope].found(name);
-  return res;
+bool TableManager::checkName(const std::string& name) const{
+  int scope = currentScope;
+  while(scope >= 0){
+    if(tables[scope].found(name)) return true;
+    --scope;
+  }
+  return false;
 }
 
-bool TableManager::checkFunction(const std::string& name){
-  currentScope = functions.size()-1;
-  bool res = functions[currentScope].found(name);
-  return res;
+bool TableManager::checkFunction(const std::string& name) const{
+  int scope = currentScope;
+  while(scope >= 0){
+    if(functions[scope].found(name)) return true;
+    --scope;
+  }
+  return false;
 }
 
 void TableManager::pushScope(){
   tables.push_back(SymbolTable());
   functions.push_back(FunctionTable());
+  ++currentScope;
 }
 
 void TableManager::popScope(){
-  if(functions.size() != 1){
-    functions.pop_back();
-  }
+  functions.pop_back();
   tables.pop_back();
+  --currentScope;
 }
