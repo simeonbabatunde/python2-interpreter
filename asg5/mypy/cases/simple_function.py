@@ -5,8 +5,8 @@ def f():
       y = 50
       print y
       def k():
-          l()
-          z= z+500
+          z= 500
+          return
           print z
       k()
   g()

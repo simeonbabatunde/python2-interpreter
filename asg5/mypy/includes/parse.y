@@ -311,8 +311,16 @@ continue_stmt // Used in: flow_stmt
 	: CONTINUE
 	;
 return_stmt // Used in: flow_stmt
-	: RETURN testlist {return 0;}
-	| RETURN {return 0;}
+	: RETURN testlist {
+			$$ = new ReturnNode($2);
+			pool.add($$);
+		}
+	| RETURN {
+			Node* node = new IntLiteral(0);
+			$$ = new ReturnNode(node);
+			pool.add($$);
+			pool.add(node);
+		}
 	;
 yield_stmt // Used in: flow_stmt
 	: yield_expr

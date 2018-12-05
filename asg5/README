@@ -16,18 +16,19 @@ as the ground truth for evaluating the accuracy of the AST output.
 
 
 What I have accomplished to implement the Abstract Syntax Tree:
-I ensured accurate precision format using <iomanip> for the floatLiterals by implementing a logic that tracks
-the number of digits after the dot in a float number, with this, I was able to eliminate the FLOAT:
-and INT: strings in the print statements.
 
-I ensured that an exception is thrown whenever a local variable is referenced before assignment, similar to
-how Python 2.7.x operates. The implementation can be found in tableManager.cpp.
+I ensured that an exception is thrown whenever a local variable is referenced before
+assignment, similar to how Python 2.7.x operates. Calling undefined function was also
+handled as well.
 
-String concatenation, multiplication, and indexing works perfectly.
+String concatenation, multiplication, and indexing works perfectly as well as other
+features implemented in project 3 and 4.
+
+I ensured the results of my testcases were compared with Python 2.7.x output by
+utilizing the test harness provided by Connor.
 
 
-I updated both the scanner, parser other files in the include directory with necessary logic to
-represent and interpret Python code.
+
 
 
 

@@ -8,7 +8,7 @@
 #include "tableManager.h"
 
 bool returnFlag = false;
-const Literal* reVal = nullptr;
+const Literal* retVal = nullptr;
 
 const Literal* IdentNode::eval() const {
   const Literal* val = TableManager::getInstance().getSymbol(ident);
@@ -32,9 +32,10 @@ const Literal* CallNode::eval() const{
   tableManage.getSuite(ident)->eval();
   // const Literal* res = TableManager::getInstance().getSymbol()
   tableManage.popScope();
-
-
-  return reVal;
+  if(returnFlag){
+    returnFlag = false;
+  }
+  return retVal;
 }
 
 const Literal* PrintNode::eval() const{
@@ -42,27 +43,43 @@ const Literal* PrintNode::eval() const{
   if(eval && !returnFlag){
     eval->print();
   }
-
   return nullptr;
 }
 
 const Literal* FuncNode::eval() const{
-  TableManager::getInstance().insertFunction(ident, suite);
-
+  if(!returnFlag){
+    TableManager::getInstance().insertFunction(ident, suite);
+  }
   return nullptr;
 }
 
 const Literal* SuiteNode::eval() const{
+  if(!returnFlag){
     for(const Node* n: stmts){
       if(!n){
         throw std::string("nullptr suite node came up");
       }
       n->eval();
     }
+  }
+  return nullptr;
+}
+
+const Literal* ReturnNode::eval() const{
+  returnFlag = true;
+  if(returnVal){
+    const Literal* val = returnVal->eval();
+    retVal = val;
+    return val;
+  }
   return nullptr;
 }
 
 const Literal* AsgBinaryNode::eval() const {
+  if(returnFlag){
+    return nullptr;
+  }
+
   if (!left || !right) {
     throw std::string("error");
   }

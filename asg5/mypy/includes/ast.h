@@ -69,6 +69,15 @@ protected:
   std::vector<Node *> stmts;
 };
 
+class ReturnNode: public Node{
+public:
+  ReturnNode(Node* val): Node(), returnVal(val){}
+  virtual ~ReturnNode(){}
+  virtual const Literal* eval() const;
+protected:
+  Node* returnVal;
+};
+
 
 class BinaryNode : public Node {
 public:
