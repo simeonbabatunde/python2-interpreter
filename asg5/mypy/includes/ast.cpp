@@ -171,7 +171,7 @@ const Literal* IndexBinaryNode::eval() const {
 
 const Literal* IfNode::eval() const {
   if(!test){
-    throw "Invalid test condition for IF";
+    throw std::string("Invalid test condition for IF");
   }
   const Literal* res = test->eval();
   if(res){
@@ -182,7 +182,7 @@ const Literal* IfNode::eval() const {
 
 const Literal* IfElseNode::eval() const {
   if(!test){
-    throw "Invalid test condition";
+    throw std::string("Invalid test condition");
   }
   const Literal* res = test->eval();
   if(res){
@@ -232,5 +232,5 @@ const Literal* NotEqualBinaryNode::eval() const {
 const Literal* GreaterThanLessThanBinaryNode::eval() const {
   const Literal* x = left->eval();
   const Literal* y = right->eval();
-  return (*x<>*y);
+  return ((*x).GTLTOperator(*y));
 }

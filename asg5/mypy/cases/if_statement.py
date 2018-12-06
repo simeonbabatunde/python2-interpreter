@@ -1,5 +1,5 @@
 x = 5
-if x!=10:
+if "hat" < "cuman":
     print x
 else:
     print x+100
