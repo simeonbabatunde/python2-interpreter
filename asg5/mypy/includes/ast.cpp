@@ -185,7 +185,8 @@ const Literal* IfElseNode::eval() const {
     throw std::string("Invalid test condition");
   }
   const Literal* res = test->eval();
-  if(res){
+  std::string boolName = static_cast<const StringLiteral*>(res)->getStr();
+  if(boolName.compare("True") == 0){
     suite1->eval();
   }else{
     suite2->eval();

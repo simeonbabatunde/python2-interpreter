@@ -229,20 +229,23 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // const Literal* nodee = new StringLiteral("False");
-    // PoolOfNodes::getInstance().add(nodee);
-
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator>(const Literal& rhs) const  {
     return rhs.opGT(val);
   }
   virtual const Literal* opGT(float lhs) const  {
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGT(int lhs) const  {
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGT(const std::string & lhs) const  {
     if((lhs.compare(val))>0){
@@ -250,10 +253,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // const Literal* nodee = new StringLiteral("False");
-    // PoolOfNodes::getInstance().add(nodee);
-
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator<=(const Literal& rhs) const  {
@@ -275,36 +277,57 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // const Literal* nodee = new StringLiteral("False");
-    // PoolOfNodes::getInstance().add(nodee);
-
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator>=(const Literal& rhs) const  {
     return rhs.opGTEQ(val);
   }
   virtual const Literal* opGTEQ(float lhs) const  {
-    throw std::string("can't get float index with string");
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTEQ(int lhs) const  {
-    throw std::string("can't get string index with string");
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
-  virtual const Literal* opGTEQ(const std::string &) const  {
-    throw std::string("can't get string index with string");
+  virtual const Literal* opGTEQ(const std::string & lhs) const  {
+    if(lhs.compare(val)>=0){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator==(const Literal& rhs) const  {
     return rhs.opEQ(val);
   }
   virtual const Literal* opEQ(float lhs) const  {
-    throw std::string("can't get float index with string");
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opEQ(int lhs) const  {
-    throw std::string("can't get string index with string");
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
-  virtual const Literal* opEQ(const std::string &) const  {
-    throw std::string("can't get string index with string");
+  virtual const Literal* opEQ(const std::string & lhs) const  {
+    if(lhs.compare(val)==0){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator!=(const Literal& rhs) const  {
@@ -335,6 +358,9 @@ public:
 
 
   virtual const Literal* eval() const { return this; }
+  std::string getStr() const {
+    return val;
+  }
   virtual void print() const {
     std::cout << val << std::endl;
   }
@@ -495,8 +521,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // Should return false
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLT(int lhs) const  {
     if(lhs < val){
@@ -504,11 +531,14 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // Should return false
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLT(const std::string & lhs) const  {
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator>(const Literal& rhs) const  {
@@ -520,7 +550,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGT(int lhs) const  {
     if(lhs>val){
@@ -528,7 +560,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGT(const std::string & lhs) const  {
     const Literal* node = new StringLiteral("True");
@@ -545,7 +579,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLTEQ(int lhs) const  {
     if(lhs<=val){
@@ -553,36 +589,72 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLTEQ(const std::string & lhs) const  {
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator>=(const Literal& rhs) const  {
     return rhs.opGTEQ(val);
   }
   virtual const Literal* opGTEQ(float lhs) const  {
-    throw std::string("can't get float index with float");
+    if(lhs>=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTEQ(int lhs) const  {
-    throw std::string("can't get int index with float");
+    if(lhs>=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTEQ(const std::string &) const  {
-    throw std::string("can't get string index with float");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
 
   virtual const Literal* operator==(const Literal& rhs) const  {
     return rhs.opEQ(val);
   }
   virtual const Literal* opEQ(float lhs) const  {
-    throw std::string("can't get float index with float");
+    if(lhs==val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opEQ(int lhs) const  {
-    throw std::string("can't get int index with float");
+    if(lhs==val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opEQ(const std::string &) const  {
-    throw std::string("can't get string index with float");
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator!=(const Literal& rhs) const  {
@@ -641,7 +713,6 @@ public:
 private:
   float val;
 };
-
 
 
 class IntLiteral: public Literal {
@@ -820,8 +891,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // Return False
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLT(int lhs) const  {
     if(lhs < val){
@@ -829,11 +901,14 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    // Return False
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLT(const std::string & lhs) const  {
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator>(const Literal& rhs) const  {
@@ -845,7 +920,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGT(int lhs) const  {
     if(lhs>val){
@@ -853,7 +930,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGT(const std::string & lhs) const  {
     const Literal* node = new StringLiteral("True");
@@ -870,7 +949,9 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLTEQ(int lhs) const  {
     if(lhs<=val){
@@ -878,36 +959,72 @@ public:
       PoolOfNodes::getInstance().add(node);
       return node;
     }
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opLTEQ(const std::string & lhs) const  {
-    return nullptr;
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator>=(const Literal& rhs) const  {
     return rhs.opGTEQ(val);
   }
   virtual const Literal* opGTEQ(float lhs) const  {
-    throw std::string("can't get float index with int");
+    if(lhs>=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTEQ(int lhs) const  {
-    throw std::string("can't get int index with int");
+    if(lhs>=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTEQ(const std::string & lhs) const  {
-    throw std::string("can't get int index with int");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
 
   virtual const Literal* operator==(const Literal& rhs) const  {
     return rhs.opEQ(val);
   }
   virtual const Literal* opEQ(float lhs) const  {
-    throw std::string("can't get float index with int");
+    if(lhs==val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opEQ(int lhs) const  {
-    throw std::string("can't get int index with int");
+    if(lhs==val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opEQ(const std::string & lhs) const  {
-    throw std::string("can't get int index with int");
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* operator!=(const Literal& rhs) const  {
