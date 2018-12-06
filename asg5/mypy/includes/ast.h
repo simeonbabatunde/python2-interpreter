@@ -145,3 +145,66 @@ public:
   IndexBinaryNode(Node* left, Node* right) : BinaryNode(left, right) {}
   virtual const Literal* eval() const;
 };
+
+class IfNode : public Node{
+public:
+  IfNode(Node* t, Node* s): Node(), test(t), suite(s){}
+  virtual ~IfNode(){}
+  virtual const Literal* eval() const;
+protected:
+  Node* test;
+  Node* suite;
+};
+
+class IfElseNode : public Node{
+public:
+  IfElseNode(Node* t, Node* s1, Node* s2): Node(), test(t), suite1(s1), suite2(s2){}
+  virtual ~IfElseNode(){}
+  virtual const Literal* eval() const;
+protected:
+  Node* test;
+  Node* suite1;
+  Node* suite2;
+};
+
+class LessThanBinaryNode: public BinaryNode{
+public:
+  LessThanBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};
+
+class GreaterThanBinaryNode: public BinaryNode{
+public:
+  GreaterThanBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};
+
+class EqualsBinaryNode: public BinaryNode{
+public:
+  EqualsBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};
+
+class GreaterThanEqualBinaryNode: public BinaryNode{
+public:
+  GreaterThanEqualBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};
+
+class LessThanEqualBinaryNode: public BinaryNode{
+public:
+  LessThanEqualBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};
+
+class GreaterThanLessThanBinaryNode: public BinaryNode{
+public:
+  GreaterThanLessThanBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};
+
+class NotEqualBinaryNode: public BinaryNode{
+public:
+  NotEqualBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
+  virtual const Literal* eval() const;
+};

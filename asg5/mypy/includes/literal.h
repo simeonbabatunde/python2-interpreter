@@ -50,137 +50,21 @@ public:
   virtual const Literal* opIndex(int) const =0;
   virtual const Literal* opIndex(const std::string &) const =0;
 
+  virtual const Literal* operator<(const Literal& rhs) const =0;
+  virtual const Literal* opLT(float) const =0;
+  virtual const Literal* opLT(int) const =0;
+  virtual const Literal* opLT(const std::string &) const =0;
+
+  virtual const Literal* operator>(const Literal& rhs) const =0;
+  virtual const Literal* opGT(float) const =0;
+  virtual const Literal* opGT(int) const =0;
+  virtual const Literal* opGT(const std::string &) const =0;
+
 
   virtual const Literal* eval() const = 0;
   virtual void print() const {
     std::cout << "No Way" << std::endl;
   }
-};
-
-
-class StringLiteral: public Literal {
-public:
- StringLiteral(const std::string & _val): val(_val) {}
-
-  virtual const Literal* operator+(const Literal& rhs) const  {
-    return rhs.opPlus(val);
-  }
-  virtual const Literal* opPlus(float lhs) const  {
-    throw std::string("can't add float and string");
-  }
-  virtual const Literal* opPlus(int lhs) const  {
-    throw std::string("can't add int and string");
-  }
-  virtual const Literal* opPlus(const std::string & lhs) const  {
-    const Literal * node = new StringLiteral(lhs + val);
-    PoolOfNodes::getInstance().add(node);
-    return node;
-  }
-
-  virtual const Literal* operator-(const Literal& rhs) const  {
-    return rhs.opSubt(val);
-  }
-  virtual const Literal* opSubt(float lhs) const  {
-    throw std::string("can't subtract string and float");
-  }
-  virtual const Literal* opSubt(int lhs) const  {
-    throw std::string("can't subtract string and float");
-  }
-  virtual const Literal* opSubt(const std::string &) const  {
-    throw std::string("can't subtract string and string");
-  }
-
-  virtual const Literal* operator*(const Literal& rhs) const  {
-    return rhs.opMult(val);
-  }
-  virtual const Literal* opMult(float lhs) const  {
-    throw std::string("can't multiply float and string");
-  }
-  virtual const Literal* opMult(int lhs) const  {
-    std::string s;
-    for(int i=0; i<lhs; i++){
-      s += val;
-    }
-    const Literal* node = new StringLiteral(s);
-    PoolOfNodes::getInstance().add(node);
-    return node;
-  }
-  virtual const Literal* opMult(const std::string &) const  {
-    throw std::string("can't multiply string by string");
-  }
-
-  virtual const Literal* operator/(const Literal& rhs) const  {
-    return rhs.opDiv(val);
-  }
-  virtual const Literal* opDiv(float lhs) const  {
-    throw std::string("can't divide float by string");
-  }
-  virtual const Literal* opDiv(int lhs) const  {
-    throw std::string("can't divide int by int");
-  }
-  virtual const Literal* opDiv(const std::string &) const  {
-    throw std::string("can't divide string by string");
-  }
-
-  virtual const Literal* DoubleDivisionOperator(const Literal& rhs) const  {
-    return rhs.opDDiv(val);
-  }
-  virtual const Literal* opDDiv(float lhs) const  {
-    throw std::string("can't int_divide float by string");
-  }
-  virtual const Literal* opDDiv(int lhs) const  {
-    throw std::string("can't int_divide int by string");
-  }
-  virtual const Literal* opDDiv(const std::string &) const  {
-    throw std::string("can't int_divide string by string");
-  }
-
-  virtual const Literal* operator%(const Literal& rhs) const  {
-    return rhs.opMod(val);
-  }
-  virtual const Literal* opMod(float lhs) const  {
-    throw std::string("can't mod float by string");
-  }
-  virtual const Literal* opMod(int lhs) const  {
-    throw std::string("can't mod int by string");
-  }
-  virtual const Literal* opMod(const std::string &) const  {
-    throw std::string("can't mod int by string");
-  }
-
-  virtual const Literal* PowOperator(const Literal& rhs) const  {
-    return rhs.opPow(val);
-  }
-  virtual const Literal* opPow(float lhs) const  {
-    throw std::string("can't exponentiate float and string");
-  }
-  virtual const Literal* opPow(int lhs) const  {
-    throw std::string("can't exponentiate int and string");
-  }
-  virtual const Literal* opPow(const std::string &) const  {
-    throw std::string("can't exponentiate int and string");
-  }
-
-  virtual const Literal* IndexOperator(const Literal& rhs) const  {
-    return rhs.opIndex(val);
-  }
-  virtual const Literal* opIndex(float lhs) const  {
-    throw std::string("can't get float index with string");
-  }
-  virtual const Literal* opIndex(int lhs) const  {
-    throw std::string("can't get string index with string");
-  }
-  virtual const Literal* opIndex(const std::string &) const  {
-    throw std::string("can't get string index with string");
-  }
-
-
-  virtual const Literal* eval() const { return this; }
-  virtual void print() const {
-    std::cout << val << std::endl;
-  }
-private:
-  std::string val;
 };
 
 
@@ -326,6 +210,32 @@ public:
     throw std::string("can't get string index with float");
   }
 
+  virtual const Literal* operator<(const Literal& rhs) const  {
+    return rhs.opLT(val);
+  }
+  virtual const Literal* opLT(float lhs) const  {
+    throw std::string("can't get float index with float");
+  }
+  virtual const Literal* opLT(int lhs) const  {
+    throw std::string("can't get int index with float");
+  }
+  virtual const Literal* opLT(const std::string &) const  {
+    throw std::string("can't get string index with float");
+  }
+
+  virtual const Literal* operator>(const Literal& rhs) const  {
+    return rhs.opGT(val);
+  }
+  virtual const Literal* opGT(float lhs) const  {
+    throw std::string("can't get float index with float");
+  }
+  virtual const Literal* opGT(int lhs) const  {
+    throw std::string("can't get int index with float");
+  }
+  virtual const Literal* opGT(const std::string &) const  {
+    throw std::string("can't get string index with float");
+  }
+
   virtual const Literal* eval() const { return this; }
   virtual void print() const {
     // The number of digits after the dot, gotten from
@@ -356,6 +266,170 @@ public:
 private:
   float val;
 };
+
+
+
+class StringLiteral: public Literal {
+public:
+ StringLiteral(const std::string & _val): val(_val) {}
+
+  virtual const Literal* operator+(const Literal& rhs) const  {
+    return rhs.opPlus(val);
+  }
+  virtual const Literal* opPlus(float lhs) const  {
+    throw std::string("can't add float and string");
+  }
+  virtual const Literal* opPlus(int lhs) const  {
+    throw std::string("can't add int and string");
+  }
+  virtual const Literal* opPlus(const std::string & lhs) const  {
+    const Literal * node = new StringLiteral(lhs + val);
+    PoolOfNodes::getInstance().add(node);
+    return node;
+  }
+
+  virtual const Literal* operator-(const Literal& rhs) const  {
+    return rhs.opSubt(val);
+  }
+  virtual const Literal* opSubt(float lhs) const  {
+    throw std::string("can't subtract string and float");
+  }
+  virtual const Literal* opSubt(int lhs) const  {
+    throw std::string("can't subtract string and float");
+  }
+  virtual const Literal* opSubt(const std::string &) const  {
+    throw std::string("can't subtract string and string");
+  }
+
+  virtual const Literal* operator*(const Literal& rhs) const  {
+    return rhs.opMult(val);
+  }
+  virtual const Literal* opMult(float lhs) const  {
+    throw std::string("can't multiply float and string");
+  }
+  virtual const Literal* opMult(int lhs) const  {
+    std::string s;
+    for(int i=0; i<lhs; i++){
+      s += val;
+    }
+    const Literal* node = new StringLiteral(s);
+    PoolOfNodes::getInstance().add(node);
+    return node;
+  }
+  virtual const Literal* opMult(const std::string &) const  {
+    throw std::string("can't multiply string by string");
+  }
+
+  virtual const Literal* operator/(const Literal& rhs) const  {
+    return rhs.opDiv(val);
+  }
+  virtual const Literal* opDiv(float lhs) const  {
+    throw std::string("can't divide float by string");
+  }
+  virtual const Literal* opDiv(int lhs) const  {
+    throw std::string("can't divide int by int");
+  }
+  virtual const Literal* opDiv(const std::string &) const  {
+    throw std::string("can't divide string by string");
+  }
+
+  virtual const Literal* DoubleDivisionOperator(const Literal& rhs) const  {
+    return rhs.opDDiv(val);
+  }
+  virtual const Literal* opDDiv(float lhs) const  {
+    throw std::string("can't int_divide float by string");
+  }
+  virtual const Literal* opDDiv(int lhs) const  {
+    throw std::string("can't int_divide int by string");
+  }
+  virtual const Literal* opDDiv(const std::string &) const  {
+    throw std::string("can't int_divide string by string");
+  }
+
+  virtual const Literal* operator%(const Literal& rhs) const  {
+    return rhs.opMod(val);
+  }
+  virtual const Literal* opMod(float lhs) const  {
+    throw std::string("can't mod float by string");
+  }
+  virtual const Literal* opMod(int lhs) const  {
+    throw std::string("can't mod int by string");
+  }
+  virtual const Literal* opMod(const std::string &) const  {
+    throw std::string("can't mod int by string");
+  }
+
+  virtual const Literal* PowOperator(const Literal& rhs) const  {
+    return rhs.opPow(val);
+  }
+  virtual const Literal* opPow(float lhs) const  {
+    throw std::string("can't exponentiate float and string");
+  }
+  virtual const Literal* opPow(int lhs) const  {
+    throw std::string("can't exponentiate int and string");
+  }
+  virtual const Literal* opPow(const std::string &) const  {
+    throw std::string("can't exponentiate int and string");
+  }
+
+  virtual const Literal* IndexOperator(const Literal& rhs) const  {
+    return rhs.opIndex(val);
+  }
+  virtual const Literal* opIndex(float lhs) const  {
+    throw std::string("can't get float index with string");
+  }
+  virtual const Literal* opIndex(int lhs) const  {
+    throw std::string("can't get string index with string");
+  }
+  virtual const Literal* opIndex(const std::string &) const  {
+    throw std::string("can't get string index with string");
+  }
+
+  virtual const Literal* operator<(const Literal& rhs) const  {
+    return rhs.opLT(val);
+  }
+  virtual const Literal* opLT(float lhs) const  {
+    const Literal* node = new FloatLiteral(1);
+    PoolOfNodes::getInstance().add(node);
+    return node;
+  }
+  virtual const Literal* opLT(int lhs) const  {
+    const Literal* node = new FloatLiteral(1);
+    PoolOfNodes::getInstance().add(node);
+    return node;
+  }
+  virtual const Literal* opLT(const std::string & lhs) const  {
+    if((lhs.compare(val))<0){
+      const Literal* node = new FloatLiteral(1);
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    return nullptr;
+  }
+
+  virtual const Literal* operator>(const Literal& rhs) const  {
+    return rhs.opGT(val);
+  }
+  virtual const Literal* opGT(float lhs) const  {
+    throw std::string("can't get float index with string");
+  }
+  virtual const Literal* opGT(int lhs) const  {
+    throw std::string("can't get string index with string");
+  }
+  virtual const Literal* opGT(const std::string &) const  {
+    throw std::string("can't get string index with string");
+  }
+
+
+  virtual const Literal* eval() const { return this; }
+  virtual void print() const {
+    std::cout << val << std::endl;
+  }
+private:
+  std::string val;
+};
+
+
 
 class IntLiteral: public Literal {
 public:
@@ -522,6 +596,32 @@ public:
     }catch ( ... ){
       throw std::string("invalid index operation");
     }
+  }
+
+  virtual const Literal* operator<(const Literal& rhs) const  {
+    return rhs.opLT(val);
+  }
+  virtual const Literal* opLT(float lhs) const  {
+    throw std::string("can't get float index with int");
+  }
+  virtual const Literal* opLT(int lhs) const  {
+    throw std::string("can't get int index with int");
+  }
+  virtual const Literal* opLT(const std::string & lhs) const  {
+    throw std::string("can't get int index with int");
+  }
+
+  virtual const Literal* operator>(const Literal& rhs) const  {
+    return rhs.opGT(val);
+  }
+  virtual const Literal* opGT(float lhs) const  {
+    throw std::string("can't get float index with int");
+  }
+  virtual const Literal* opGT(int lhs) const  {
+    throw std::string("can't get int index with int");
+  }
+  virtual const Literal* opGT(const std::string & lhs) const  {
+    throw std::string("can't get int index with int");
   }
 
 

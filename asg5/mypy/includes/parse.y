@@ -48,7 +48,8 @@
 %type<fltNumber> FLT_NUMBER
 %type<id> NAME
 %type<stringInput> STRING
-%type<tokenType> PLUS MINUS pick_unop pick_PLUS_MINUS TILDE pick_multop augassign
+%type<tokenType> PLUS MINUS pick_unop pick_PLUS_MINUS TILDE pick_multop augassign comp_op
+%type<tokenType> LESS LESSEQUAL GREATER GREATEREQUAL GRLT EQEQUAL NOTEQUAL
 %type<node> arith_expr term factor power atom shift_expr opt_test test or_test and_test not_test
 %type<node> xor_expr  and_expr testlist pick_yield_expr_testlist expr_stmt old_test testlist_safe
 %type<node> pick_yield_expr_testlist_comp opt_yield_test testlist_comp opt_listmaker comparison
@@ -264,14 +265,6 @@ print_stmt // Used in: small_stmt
 				$$ = new PrintNode(nullptr);
 				pool.add($$);
 			}
-
-			//try{
-			//	$2->eval()->print();
-			//}catch(std::string & msg){
-			//	std::cout<< msg << std::endl;
-			//}catch( ... ){
-			//	std::cout<< "Hey! something is wrong." << std::endl;
-			//}
 		}
 	| PRINT RIGHTSHIFT test opt_test_2 {$$ = nullptr;}
 	;
@@ -406,8 +399,14 @@ compound_stmt // Used in: stmt
 	| decorated {return 0;}
 	;
 if_stmt // Used in: compound_stmt
-	: IF test COLON suite star_ELIF ELSE COLON suite {return 0;}
-	| IF test COLON suite star_ELIF {return 0;}
+	: IF test COLON suite star_ELIF ELSE COLON suite {
+			$$ = new IfElseNode($2, $4, $8);
+			pool.add($$);
+		}
+	| IF test COLON suite star_ELIF {
+			$$ = new IfNode($2, $4);
+			pool.add($$);
+		}
 	;
 star_ELIF // Used in: if_stmt, star_ELIF
 	: star_ELIF ELIF test COLON suite
@@ -517,20 +516,51 @@ not_test // Used in: and_test, not_test
 	;
 comparison // Used in: not_test, comparison
 	: expr {$$ = $1;}
-	| comparison comp_op expr {$$ = nullptr;}
+	| comparison comp_op expr {
+			if($1){
+				if($2 == LESS){
+					$$ = new LessThanBinaryNode($1, $3);
+					pool.add($$);
+				}
+				if($2 == GREATER){
+					$$ = new GreaterThanBinaryNode($1, $3);
+					pool.add($$);
+				}
+				if($2 == EQEQUAL){
+					$$ = new EqualsBinaryNode($1, $3);
+					pool.add($$);
+				}
+				if($2 == GREATEREQUAL){
+					$$ = new GreaterThanEqualBinaryNode($1, $3);
+					pool.add($$);
+				}
+				if($2 == LESSEQUAL){
+					$$ = new LessThanEqualBinaryNode($1, $3);
+					pool.add($$);
+				}
+				if($2 == GRLT){
+					$$ = new GreaterThanLessThanBinaryNode($1, $3);
+					pool.add($$);
+				}
+				if($2 == NOTEQUAL){
+					$$ = new NotEqualBinaryNode($1, $3);
+					pool.add($$);
+				}
+			}
+		}
 	;
 comp_op // Used in: comparison
-	: LESS
-	| GREATER
-	| EQEQUAL
-	| GREATEREQUAL
-	| LESSEQUAL
-	| GRLT
-	| NOTEQUAL
-	| IN
-	| NOT IN
-	| IS
-	| IS NOT
+	: LESS {$$ = LESS;}
+	| GREATER {$$ = GREATER;}
+	| EQEQUAL {$$ = EQEQUAL;}
+	| GREATEREQUAL {$$ = GREATEREQUAL;}
+	| LESSEQUAL {$$ = LESSEQUAL;}
+	| GRLT {$$ = GRLT;}
+	| NOTEQUAL {$$ = NOTEQUAL;}
+	| IN {;}
+	| NOT IN {;}
+	| IS {;}
+	| IS NOT {;}
 	;
 expr // Used in: exec_stmt, with_item, comparison, expr, exprlist, star_COMMA_expr
 	: xor_expr {$$ = $1;}

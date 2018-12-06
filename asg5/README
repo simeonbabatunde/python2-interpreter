@@ -21,6 +21,9 @@ I ensured that an exception is thrown whenever a local variable is referenced be
 assignment, similar to how Python 2.7.x operates. Calling undefined function was also
 handled as well.
 
+The GRLT "<>" relational operator was also implemented in addition to other six major
+relational operators.
+
 String concatenation, multiplication, and indexing works perfectly as well as other
 features implemented in project 3 and 4.
 

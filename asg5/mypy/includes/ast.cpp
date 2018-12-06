@@ -168,3 +168,69 @@ const Literal* IndexBinaryNode::eval() const {
   const Literal* y = right->eval();
   return ((*x).IndexOperator(*y));
 }
+
+const Literal* IfNode::eval() const {
+  if(!test){
+    throw "Invalid test condition for IF";
+  }
+  const Literal* res = test->eval();
+  if(res){
+    suite->eval();
+  }
+  return nullptr;
+}
+
+const Literal* IfElseNode::eval() const {
+  if(!test){
+    throw "Invalid test condition";
+  }
+  const Literal* res = test->eval();
+  if(res){
+    suite1->eval();
+  }else{
+    suite2->eval();
+  }
+  return nullptr;
+}
+
+const Literal* LessThanBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x<*y);
+}
+
+const Literal* GreaterThanBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x>*y);
+}
+
+const Literal* LessThanEqualBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x<=*y);
+}
+
+const Literal* GreaterThanEqualBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x>=*y);
+}
+
+const Literal* EqualsBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x==*y);
+}
+
+const Literal* NotEqualBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x!=*y);
+}
+
+const Literal* GreaterThanLessThanBinaryNode::eval() const {
+  const Literal* x = left->eval();
+  const Literal* y = right->eval();
+  return (*x<>*y);
+}
