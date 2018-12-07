@@ -1,4 +1,6 @@
-if("boy"<3.0):
-    print "Good"
+a = 33
+b = 33
+if b > a:
+  print("b is greater than a")
 else:
-    print "Not Good"
+  print("a is greater than b")

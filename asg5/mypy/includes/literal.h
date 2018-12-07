@@ -334,26 +334,48 @@ public:
     return rhs.opNEQ(val);
   }
   virtual const Literal* opNEQ(float lhs) const  {
-    throw std::string("can't get float index with string");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
   virtual const Literal* opNEQ(int lhs) const  {
-    throw std::string("can't get string index with string");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
-  virtual const Literal* opNEQ(const std::string &) const  {
-    throw std::string("can't get string index with string");
+  virtual const Literal* opNEQ(const std::string & lhs) const  {
+    if(lhs.compare(val)!= 0){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
   virtual const Literal* GTLTOperator(const Literal& rhs) const  {
     return rhs.opGTLT(val);
   }
   virtual const Literal* opGTLT(float lhs) const  {
-    throw std::string("can't get float index with string");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
   virtual const Literal* opGTLT(int lhs) const  {
-    throw std::string("can't get string index with string");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
-  virtual const Literal* opGTLT(const std::string &) const  {
-    throw std::string("can't get string index with string");
+  virtual const Literal* opGTLT(const std::string & lhs) const  {
+    if(lhs.compare(val)!= 0){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
 
 
@@ -661,26 +683,58 @@ public:
     return rhs.opNEQ(val);
   }
   virtual const Literal* opNEQ(float lhs) const  {
-    throw std::string("can't get float index with float");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opNEQ(int lhs) const  {
-    throw std::string("can't get int index with float");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opNEQ(const std::string &) const  {
-    throw std::string("can't get string index with float");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
 
   virtual const Literal* GTLTOperator(const Literal& rhs) const  {
     return rhs.opGTLT(val);
   }
   virtual const Literal* opGTLT(float lhs) const  {
-    throw std::string("can't get float index with float");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTLT(int lhs) const  {
-    throw std::string("can't get int index with float");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTLT(const std::string &) const  {
-    throw std::string("can't get string index with float");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
 
   virtual const Literal* eval() const { return this; }
@@ -1031,28 +1085,59 @@ public:
     return rhs.opNEQ(val);
   }
   virtual const Literal* opNEQ(float lhs) const  {
-    throw std::string("can't get float index with int");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opNEQ(int lhs) const  {
-    throw std::string("can't get int index with int");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opNEQ(const std::string & lhs) const  {
-    throw std::string("can't get int index with int");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
 
   virtual const Literal* GTLTOperator(const Literal& rhs) const  {
     return rhs.opGTLT(val);
   }
   virtual const Literal* opGTLT(float lhs) const  {
-    throw std::string("can't get float index with int");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTLT(int lhs) const  {
-    throw std::string("can't get int index with int");
+    if(lhs!=val){
+      const Literal* node = new StringLiteral("True");
+      PoolOfNodes::getInstance().add(node);
+      return node;
+    }
+    const Literal* nnode = new StringLiteral("False");
+    PoolOfNodes::getInstance().add(nnode);
+    return nnode;
   }
   virtual const Literal* opGTLT(const std::string & lhs) const  {
-    throw std::string("can't get int index with int");
+    const Literal* node = new StringLiteral("True");
+    PoolOfNodes::getInstance().add(node);
+    return node;
   }
-
 
   int getInt() const{
     return val;

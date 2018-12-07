@@ -7,6 +7,7 @@ def f():
       print 1
     else:
       print 2
+    print 101
 
 f()
 print 17

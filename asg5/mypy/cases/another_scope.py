@@ -9,4 +9,3 @@ def f():
       print 2
 
 f()
-print 17

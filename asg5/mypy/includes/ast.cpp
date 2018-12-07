@@ -60,6 +60,11 @@ const Literal* SuiteNode::eval() const{
         throw std::string("nullptr suite node came up");
       }
       n->eval();
+      // Check if return is available
+      if(returnFlag){
+        returnFlag = false;
+        break;
+      }
     }
   }
   return nullptr;
@@ -186,10 +191,10 @@ const Literal* IfElseNode::eval() const {
   }
   const Literal* res = test->eval();
   std::string boolName = static_cast<const StringLiteral*>(res)->getStr();
-  if(boolName.compare("True") == 0){
-    suite1->eval();
-  }else{
+  if(boolName.compare("False") == 0){
     suite2->eval();
+  }else{
+    suite1->eval();
   }
   return nullptr;
 }
