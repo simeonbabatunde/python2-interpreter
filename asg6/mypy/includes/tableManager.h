@@ -16,9 +16,10 @@ public:
 
   const Literal* getSymbol(const std::string& name);
   const Node* getSuite(const std::string& name);
+  const Node* getParameters(const std::string& name);
 
   void insertSymbol(const std::string& name, const Literal* symbol);
-  void insertFunction(const std::string& name, const Node* suite);
+  void insertFunction(const std::string& name, const Node* parameters, const Node* suite);
 
   bool checkName(const std::string& name) const;
   bool checkFunction(const std::string& name) const;

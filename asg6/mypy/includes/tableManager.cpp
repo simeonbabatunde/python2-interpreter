@@ -39,12 +39,26 @@ const Node* TableManager::getSuite(const std::string& name){
   return nullptr;
 }
 
+const Node* TableManager::getParameters(const std::string& name){
+  int scope = currentScope;
+
+  // check currentScope and existint scope
+  while(scope >= 0){
+    if(functions[scope].found(name)){
+      const Node* params = functions[scope].getParameters(name);
+      return params;
+    }
+    --scope;
+  }
+  return nullptr;
+}
+
 void TableManager::insertSymbol(const std::string& name, const Literal* symbol){
   tables[currentScope].setValue(name, symbol);
 }
 
-void TableManager::insertFunction(const std::string& name, const Node* suite){
-  functions[currentScope].setValue(name, suite);
+void TableManager::insertFunction(const std::string& name, const Node* parameters, const Node* suite){
+  functions[currentScope].setValue(name, parameters, suite);
 }
 
 

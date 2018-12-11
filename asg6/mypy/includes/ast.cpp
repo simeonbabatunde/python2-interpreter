@@ -22,16 +22,41 @@ const Literal* StringNode::eval() const {
 
 const Literal* CallNode::eval() const{
   TableManager& tableManage = TableManager::getInstance();
+  const Node* suite = tableManage.getSuite(ident);
+  const Node* list = tableManage.getParameters(ident);
 
-  if(!tableManage.checkFunction(ident)){
+  if(!suite){
     std::cout<< "function '" << ident << "' is not defined " << std::endl;
     throw std::exception();
   }
 
-  tableManage.pushScope();
-  tableManage.getSuite(ident)->eval();
-  // const Literal* res = TableManager::getInstance().getSymbol()
+  if(list){
+    std::vector<Node*> arglst = static_cast<const ParamsNode *>(arglist)->getList();
+    std::vector<Node*> parameterlist = static_cast<const ParamsNode*>(list)->getList();
+    if(arglst.size() != parameterlist.size()){
+      std::cout<<"function "<<ident<<" takes "<<parameterlist.size()<<" parameters but "<<arglst.size()<<" are given"<<std::endl;
+      throw std::exception();
+    }
+    tableManage.pushScope();
+
+    for(unsigned int i=0; i<arglst.size(); i++){
+      const std::string name = static_cast<const IdentNode*>(parameterlist[i])->getIdent();
+      const Literal* res = arglst[i]->eval();
+      tableManage.insertSymbol(name, res);
+    }
+  }else{      // functions without arguments
+    std::vector<Node*> arglst = static_cast<const ParamsNode*>(arglist)->getList();
+    if(arglst.size() != 0){
+      std::cout << "function " << ident << " has no parameters but " << arglst.size() << " are given."<<std::endl;
+      throw std::exception();
+    }
+    tableManage.pushScope();
+  }
+
+  // tableManage.getSuite(ident)->eval();
+  static_cast<const SuiteNode*>(suite)->eval();
   tableManage.popScope();
+  // check for return statement
   if(returnFlag){
     returnFlag = false;
   }
@@ -48,7 +73,7 @@ const Literal* PrintNode::eval() const{
 
 const Literal* FuncNode::eval() const{
   if(!returnFlag){
-    TableManager::getInstance().insertFunction(ident, suite);
+    TableManager::getInstance().insertFunction(ident,arglist, suite);
   }
   return nullptr;
 }
@@ -239,4 +264,8 @@ const Literal* GreaterThanLessThanBinaryNode::eval() const {
   const Literal* x = left->eval();
   const Literal* y = right->eval();
   return ((*x).GTLTOperator(*y));
+}
+
+const Literal* ParamsNode::eval() const {
+  return nullptr;
 }

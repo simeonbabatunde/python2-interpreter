@@ -56,8 +56,9 @@
 %type<node> yield_expr old_lambdef lambdef opt_dictorsetmaker testlist1 star_EQUAL expr listmaker
 %type<node> dictorsetmaker plus_STRING subscript opt_test_only star_COMMA_subscript subscriptlist
 %type<node> trailer star_trailer funcdef suite simple_stmt small_stmt print_stmt flow_stmt return_stmt
-%type<node> stmt compound_stmt if_stmt while_stmt for_stmt try_stmt with_stmt
-%type<vec> plus_stmt
+%type<node> stmt compound_stmt if_stmt while_stmt for_stmt try_stmt with_stmt parameters fpdef pick_argument
+%type<node> argument opt_arglist
+%type<vec> plus_stmt varargslist star_fpdef_COMMA star_argument_COMMA arglist
 
 %start start
 
@@ -88,8 +89,16 @@ decorator // Used in: decorators
 	| AT dotted_name NEWLINE
 	;
 opt_arglist // Used in: decorator, trailer
-	: arglist
-	| %empty
+	: arglist {
+			$$ = new ParamsNode(*$1);
+			pool.add($$);
+			delete $1;
+		}
+	| %empty {
+			std::vector<Node*> initVec;
+			$$ = new ParamsNode(initVec);
+			pool.add($$);
+		}
 	;
 decorators // Used in: decorators, decorated
 	: decorators decorator
@@ -101,26 +110,39 @@ decorated // Used in: compound_stmt
 	;
 funcdef // Used in: decorated, compound_stmt
 	: DEF NAME parameters COLON suite {
-			$$ = new FuncNode($2, $5);
+			$$ = new FuncNode($2, $3, $5);
 			pool.add($$);
 			delete [] $2;
 		}
 	;
 parameters // Used in: funcdef
-	: LPAR varargslist RPAR
-	| LPAR RPAR
+	: LPAR varargslist RPAR {
+			$$ = new ParamsNode(*$2);
+			pool.add($$);
+			delete $2;
+		}
+	| LPAR RPAR {
+			$$ = nullptr;
+		}
 	;
 varargslist // Used in: parameters, old_lambdef, lambdef
-	: star_fpdef_COMMA pick_STAR_DOUBLESTAR
-	| star_fpdef_COMMA fpdef opt_EQUAL_test opt_COMMA
+	: star_fpdef_COMMA pick_STAR_DOUBLESTAR {;}
+	| star_fpdef_COMMA fpdef opt_EQUAL_test opt_COMMA {
+			$$ = $1;
+			$$->push_back($2);
+		}
 	;
 opt_EQUAL_test // Used in: varargslist, star_fpdef_COMMA
 	: EQUAL test
 	| %empty
 	;
 star_fpdef_COMMA // Used in: varargslist, star_fpdef_COMMA
-	: star_fpdef_COMMA fpdef opt_EQUAL_test COMMA
-	| %empty
+	: star_fpdef_COMMA fpdef opt_EQUAL_test COMMA {
+			$$->push_back($2);
+		}
+	| %empty {
+			$$ = new std::vector<Node*>();
+		}
 	;
 opt_DOUBLESTAR_NAME // Used in: pick_STAR_DOUBLESTAR
 	: COMMA DOUBLESTAR NAME {delete [] $3;}
@@ -135,8 +157,12 @@ opt_COMMA // Used in: varargslist, opt_test, opt_test_2, testlist_safe, listmake
 	| %empty
 	;
 fpdef // Used in: varargslist, star_fpdef_COMMA, fplist, star_fpdef_notest
-	: NAME {delete [] $1;}
-	| LPAR fplist RPAR
+	: NAME {
+			$$ = new IdentNode($1);
+			pool.add($$);
+			delete [] $1;
+		}
+	| LPAR fplist RPAR { $$ = nullptr;}
 	;
 fplist // Used in: fpdef
 	: fpdef star_fpdef_notest COMMA
@@ -666,7 +692,7 @@ power // Used in: factor
 					isIndex = false;
 				}else{
 					std::string n = static_cast<IdentNode*>($1)->getIdent();
-					$$ = new CallNode(n);
+					$$ = new CallNode(n, $2);
 					pool.add($$);
 				}
 			}else{
@@ -745,7 +771,7 @@ lambdef // Used in: test
 	| LAMBDA COLON test {$$ = $3;}
 	;
 trailer // Used in: star_trailer
-	: LPAR opt_arglist RPAR {$$ = new IntLiteral(1); pool.add($$);}
+	: LPAR opt_arglist RPAR {$$ = $2;}
 	| LSQB subscriptlist RSQB {$$ = $2;}
 	| DOT NAME {$$ = nullptr; delete [] $2;}
 	;
@@ -814,11 +840,16 @@ opt_testlist // Used in: classdef
 	| %empty
 	;
 arglist // Used in: opt_arglist
-	: star_argument_COMMA pick_argument
+	: star_argument_COMMA pick_argument{
+			$$ = $1;
+			$$->push_back($2);
+		}
 	;
 star_argument_COMMA // Used in: arglist, star_argument_COMMA
-	: star_argument_COMMA argument COMMA
-	| %empty
+	: star_argument_COMMA argument COMMA{
+			$$->push_back($2);
+		}
+	| %empty {$$ = new std::vector<Node*>();}
 	;
 star_COMMA_argument // Used in: star_COMMA_argument, pick_argument
 	: star_COMMA_argument COMMA argument
@@ -829,12 +860,12 @@ opt_DOUBLESTAR_test // Used in: pick_argument
 	| %empty
 	;
 pick_argument // Used in: arglist
-	: argument opt_COMMA
-	| STAR test star_COMMA_argument opt_DOUBLESTAR_test
-	| DOUBLESTAR test
+	: argument opt_COMMA {$$ = $1;}
+	| STAR test star_COMMA_argument opt_DOUBLESTAR_test {$$ = nullptr;}
+	| DOUBLESTAR test {$$ = nullptr;}
 	;
 argument // Used in: star_argument_COMMA, star_COMMA_argument, pick_argument
-	: test opt_comp_for
+	: test opt_comp_for {$$ = $1;}
 	| test EQUAL test
 	;
 opt_comp_for // Used in: argument

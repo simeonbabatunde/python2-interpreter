@@ -33,22 +33,24 @@ private:
 
 class CallNode: public Node{
 public:
-  CallNode(const std::string id):Node(), ident(id){}
+  CallNode(const std::string id, Node* list):Node(), ident(id), arglist(list){}
   virtual ~CallNode(){}
   const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
+  Node* arglist;
 };
 
 class FuncNode: public Node{
 public:
-  FuncNode(const std::string id, Node* stmts): ident(id), suite(stmts){}
+  FuncNode(const std::string id, Node* list, Node* stmts): ident(id), arglist(list), suite(stmts){}
   virtual ~FuncNode(){}
   const std::string getIdent() const { return ident; }
   virtual const Literal* eval() const;
 private:
   std::string ident;
+  Node* arglist;
   Node * suite;
 };
 
@@ -207,4 +209,14 @@ class NotEqualBinaryNode: public BinaryNode{
 public:
   NotEqualBinaryNode(Node* left, Node* right): BinaryNode(left, right){}
   virtual const Literal* eval() const;
+};
+
+class ParamsNode: public Node{
+public:
+  ParamsNode(std::vector<Node*> p): Node(), params(p){}
+  virtual ~ParamsNode(){}
+  std::vector<Node *> getList() const {return params;}
+  virtual const Literal* eval() const;
+protected:
+  std::vector<Node*> params;
 };
