@@ -53,52 +53,45 @@ const Literal* CallNode::eval() const{
     tableManage.pushScope();
   }
 
-  // tableManage.getSuite(ident)->eval();
   static_cast<const SuiteNode*>(suite)->eval();
   tableManage.popScope();
-  // check for return statement
-  if(returnFlag){
-    returnFlag = false;
-  }
+
   return retVal;
 }
 
 const Literal* PrintNode::eval() const{
+  bool reV = TableManager::getInstance().checkName("return");
   const Literal* eval = Pnode->eval();
-  if(eval && !returnFlag){
+  if(eval && !reV){
     eval->print();
   }
   return nullptr;
 }
 
 const Literal* FuncNode::eval() const{
-  if(!returnFlag){
+  bool reV = TableManager::getInstance().checkName("return");
+  if(!reV){
     TableManager::getInstance().insertFunction(ident,arglist, suite);
   }
   return nullptr;
 }
 
 const Literal* SuiteNode::eval() const{
-  if(!returnFlag){
     for(const Node* n: stmts){
-      if(!n){
-        throw std::string("nullptr suite node came up");
-      }
-      n->eval();
-      // Check if return is available
-      if(returnFlag){
-        returnFlag = false;
-        break;
+      if(n){
+        n->eval();
+        if(TableManager::getInstance().checkName("return")){
+          break;
+        }
       }
     }
-  }
   return nullptr;
 }
 
 const Literal* ReturnNode::eval() const{
-  returnFlag = true;
   if(returnVal){
     const Literal* val = returnVal->eval();
+    TableManager::getInstance().insertSymbol("return", nullptr);
     retVal = val;
     return val;
   }
@@ -106,7 +99,7 @@ const Literal* ReturnNode::eval() const{
 }
 
 const Literal* AsgBinaryNode::eval() const {
-  if(returnFlag){
+  if(TableManager::getInstance().checkName("return")){
     return nullptr;
   }
 
@@ -204,9 +197,12 @@ const Literal* IfNode::eval() const {
     throw std::string("Invalid test condition for IF");
   }
   const Literal* res = test->eval();
-  if(res){
+  std::string boolName = static_cast<const StringLiteral*>(res)->getStr();
+  if(boolName.compare("False") != 0){
+    if(!suite) throw std::string("then statement is null");
     suite->eval();
   }
+
   return nullptr;
 }
 
@@ -217,8 +213,10 @@ const Literal* IfElseNode::eval() const {
   const Literal* res = test->eval();
   std::string boolName = static_cast<const StringLiteral*>(res)->getStr();
   if(boolName.compare("False") == 0){
+    if(!suite2) throw std::string("else statement is null");
     suite2->eval();
   }else{
+    if(!suite1) throw std::string("then statement is null");
     suite1->eval();
   }
   return nullptr;

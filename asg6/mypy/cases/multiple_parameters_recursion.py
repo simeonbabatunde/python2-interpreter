@@ -10,6 +10,6 @@ def f(n,c,t,k,l):
         n+=1
         t+=k+l
         l+=n+5
-        f(n,c,t,k,l)
+        # f(n,c,t,k,l)
 
 f(100,3,6,7,5)

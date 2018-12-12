@@ -4,7 +4,7 @@ x+=y**(.5+1*2)
 
 def g():
     y = 5
-    if y%-2 == -1:
+    if y==5:
         print -2
     def k():
         x = 8
