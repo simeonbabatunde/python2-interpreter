@@ -1,0 +1,39 @@
+Name: Simeon Babatunde
+
+Course no: CpSc 8270
+
+Clemson Email Address: sbabatu@g.clemson.edu
+
+Project no: 6
+
+Project due date: December 12, 2018
+
+Project description:
+This project focuses on updating the Abstract Syntax Tree (AST) representation to
+translate language construct like formal and actual parameters, pass by value parameter
+transmission, and recursion. The Python 2.7.x interpreter serves as the ground truth
+for evaluating the accuracy of the AST output.
+
+
+What I have accomplished to implement the new features:
+Python function translation was implemented, including scope resolution and return
+value propagation which works satisfactorily with reference to Python 2.7.x
+
+I ensured that all the construct from previous projects like integer, float, string
+values and indexing, variables, print, assignment, relational operators, if/else,
+functions, scope resolution, return value propagation were translated accurately with
+similar results as Python 2.7.x.
+
+Actual and formal parameters, pass by value transmission, and recursion were successfully
+implemeted and evaluated with python 2.7 using the test harness written for regression
+test.
+
+
+The easiest part of this project:
+Identifying the necessary productions rules in parse.y for parameters passed to Python
+functions. Eliminating warnings relating to data types of the production rules in parse.y
+
+Problems that I had in completing this project:
+Updating the CallNode in the ast.cpp to accommodate functions with or without arguments
+seems daunting at first. Updating the member functions in TableManager to accommodate
+function parameter. Tracking possibly lost blocks.
