@@ -14,7 +14,6 @@ This repository contains the implementation of an interpreter written for python
 An Abstract Syntak Tree (AST) was designed and implemented to represent and interprete Python 2.7.x code. Regression was carried out using a test harness written in python to compare the output of this interpreter with that of Python 2.7.x. Feel free to modify and use this interpreter.
 
 ### Directory Structure
-=======================
 The directory structure is based on the different milestones/phases of the project:
 - Milsetone 1: mccabe_complexity_computation
 - Milestone 2: abstract_syntax_tree_implementation
